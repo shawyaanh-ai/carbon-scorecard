@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carbon Credit Integrity Scorecard , CYC Berkeley</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B1F3A;
+  --surface:#112240;
+  --surface2:#0d1b36;
+  --teal:#00D4AA;
+  --teal-light:#64FFDA;
+  --amber:#F5A623;
+  --red:#E53935;
+  --green:#00C853;
+  --text:#FFFFFF;
+  --muted:#8892B0;
+  --border:rgba(100,255,218,0.1);
+  --glass:rgba(17,34,64,0.8);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden}
+a{color:var(--teal);text-decoration:none}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--teal);border-radius:3px}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(11,31,58,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{font-size:13px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--teal)}
+
+/* ── SECTION SHELL ── */
+section{padding:100px 2rem}
+.container{max-width:1400px;margin:0 auto}
+.section-tag{font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem}
+.section-title{font-size:clamp(32px,5vw,48px);font-weight:800;line-height:1.15;margin-bottom:1rem}
+.section-subtitle{font-size:18px;color:var(--muted);max-width:700px;line-height:1.7}
+
+/* ── CARD ── */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(10px);transition:transform .3s cubic-bezier(.25,.8,.25,1),box-shadow .3s}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,212,170,.12)}
+
+/* ── FADE IN ── */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:none}
+
+/* ════════════════════════════
+   HERO
+════════════════════════════ */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:0 2rem;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;z-index:0}
+#hero-bg-img{position:absolute;inset:0;z-index:0;background:url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1800&q=80') center/cover no-repeat;opacity:0.07;}
+.hero-content{position:relative;z-index:1;max-width:900px;margin:0 auto;padding-top:60px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);border-radius:100px;padding:.35rem 1rem;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:2rem}
+.hero-title{font-size:clamp(42px,8vw,80px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:1.5rem}
+.hero-title span{background:linear-gradient(135deg,var(--teal),var(--teal-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-subtitle{font-size:20px;color:var(--muted);max-width:680px;margin-bottom:3rem;line-height:1.7}
+.hero-stats{display:flex;gap:3rem;margin-bottom:3rem;flex-wrap:wrap}
+.hero-stat{display:flex;flex-direction:column}
+.hero-stat-num{font-size:clamp(36px,5vw,56px);font-weight:800;color:var(--teal);line-height:1}
+.hero-stat-label{font-size:13px;color:var(--muted);letter-spacing:.05em;margin-top:.25rem}
+.hero-quote{background:rgba(0,212,170,.06);border-left:3px solid var(--teal);padding:1.25rem 1.5rem;border-radius:0 12px 12px 0;margin-bottom:3rem;max-width:700px}
+.hero-quote p{font-size:16px;font-style:italic;color:rgba(255,255,255,.85);line-height:1.7}
+.hero-quote cite{display:block;margin-top:.75rem;font-size:12px;font-style:normal;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.875rem 2rem;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .25s cubic-bezier(.25,.8,.25,1);border:none}
+.btn-primary{background:var(--teal);color:#0B1F3A}
+.btn-primary:hover{background:var(--teal-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,170,.35)}
+.btn-outline{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.btn-outline:hover{background:rgba(0,212,170,.1)}
+
+/* ════════════════════════════
+   PROBLEM SECTION
+════════════════════════════ */
+#problem{background:var(--surface2)}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin:3rem 0}
+.stat-card{padding:2rem;border-radius:16px;background:var(--glass);border:1px solid var(--border);text-align:center}
+.stat-card-num{font-size:52px;font-weight:800;line-height:1;margin-bottom:.5rem}
+.stat-card-label{font-size:14px;color:var(--muted);line-height:1.5}
+.stat-card.danger .stat-card-num{color:var(--red)}
+.stat-card.amber .stat-card-num{color:var(--amber)}
+.stat-card.teal .stat-card-num{color:var(--teal)}
+
+/* Timeline */
+.timeline{margin:3rem 0;position:relative}
+.timeline::before{content:'';position:absolute;top:28px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),rgba(0,212,170,.1));z-index:0}
+.timeline-track{display:flex;gap:0;overflow-x:auto;padding-bottom:1rem;scrollbar-width:thin}
+.timeline-item{flex:0 0 auto;width:200px;padding-top:60px;position:relative;padding-right:1rem}
+.timeline-dot{position:absolute;top:18px;left:0;width:20px;height:20px;border-radius:50%;border:2px solid var(--teal);background:var(--bg);z-index:1;transition:transform .2s}
+.timeline-dot.active{background:var(--teal)}
+.timeline-dot.red{border-color:var(--red)}
+.timeline-dot.red.active{background:var(--red)}
+.timeline-date{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:.25rem}
+.timeline-event{font-size:13px;font-weight:600;margin-bottom:.25rem}
+.timeline-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* Additionality explainer */
+.explainer-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:2rem 0}
+.explainer-card{padding:2rem;border-radius:16px;background:var(--glass);border:1px solid var(--border)}
+.explainer-card h3{font-size:18px;font-weight:700;margin-bottom:.75rem}
+.explainer-icon{font-size:32px;margin-bottom:1rem}
+
+/* EJ callout */
+.ej-callout{background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(229,57,53,.03));border:1px solid rgba(229,57,53,.25);border-radius:16px;padding:2rem;margin:2rem 0}
+.ej-callout h3{color:var(--red);font-size:20px;font-weight:700;margin-bottom:.75rem}
+
+/* ════════════════════════════
+   FRAMEWORK
+════════════════════════════ */
+#framework{}
+.criteria-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin:3rem 0}
+.criteria-card{padding:1.75rem;border-radius:16px;background:var(--glass);border:1px solid var(--border);transition:transform .25s,box-shadow .25s}
+.criteria-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,212,170,.1)}
+.criteria-icon{font-size:28px;margin-bottom:.75rem}
+.criteria-title{font-size:17px;font-weight:700;margin-bottom:.5rem}
+.criteria-desc{font-size:14px;color:var(--muted);margin-bottom:1rem;line-height:1.6}
+.criteria-anchor{font-size:12px;padding:.25rem .75rem;border-radius:100px;display:inline-block}
+.criteria-anchor.high{background:rgba(0,200,83,.1);color:var(--green)}
+.criteria-anchor.low{background:rgba(229,57,53,.1);color:var(--red)}
+.criteria-ccp{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-top:.75rem;opacity:.8}
+.radar-container{max-width:600px;margin:3rem auto;padding:2rem;background:var(--glass);border:1px solid var(--border);border-radius:20px}
+
+/* ════════════════════════════
+   SCORECARD
+════════════════════════════ */
+#scorecard{background:var(--surface2)}
+.filter-bar{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2.5rem;align-items:center}
+.filter-group{display:flex;flex-direction:column;gap:.4rem}
+.filter-group label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.filter-pills{display:flex;flex-wrap:wrap;gap:.4rem}
+.pill{padding:.35rem .9rem;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s}
+.pill.active,.pill:hover{background:rgba(0,212,170,.15);border-color:var(--teal);color:var(--teal)}
+.sort-select{padding:.4rem .9rem;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer}
+.credits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem}
+.credit-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:1.5rem;transition:transform .25s cubic-bezier(.25,.8,.25,1),box-shadow .25s;position:relative;cursor:pointer}
+.credit-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,212,170,.12)}
+.credit-card.hidden{display:none}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+.card-name{font-size:16px;font-weight:700;line-height:1.3;flex:1;padding-right:1rem}
+.card-flag{font-size:22px}
+.card-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .65rem;border-radius:100px}
+.badge-verra{background:rgba(59,130,246,.15);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+.badge-gold{background:rgba(245,166,35,.15);color:var(--amber);border:1px solid rgba(245,166,35,.2)}
+.badge-acr{background:rgba(0,200,83,.15);color:#4ade80;border:1px solid rgba(0,200,83,.2)}
+.badge-type{background:rgba(148,163,184,.1);color:var(--muted);border:1px solid rgba(148,163,184,.15)}
+.badge-tier-high{background:rgba(0,212,170,.15);color:var(--teal);border:1px solid rgba(0,212,170,.25)}
+.badge-tier-medium{background:rgba(245,166,35,.15);color:var(--amber);border:1px solid rgba(245,166,35,.25)}
+.badge-tier-low{background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.25)}
+.badge-tier-critical{background:rgba(229,57,53,.15);color:var(--red);border:1px solid rgba(229,57,53,.25)}
+
+/* Score ring */
+.card-score-row{display:flex;align-items:center;gap:1.25rem;margin-bottom:1.25rem}
+.score-ring-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
+.score-ring-svg{width:72px;height:72px;transform:rotate(-90deg)}
+.score-ring-bg{fill:none;stroke:rgba(255,255,255,.06)}
+.score-ring-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.25,.8,.25,1)}
+.score-ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:18px;line-height:1}
+.score-ring-denom{font-size:10px;color:var(--muted);font-weight:400}
+.criteria-bars{flex:1}
+.cbar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem}
+.cbar-label{font-size:11px;color:var(--muted);width:32px;flex-shrink:0}
+.cbar-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
+.cbar-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.25,.8,.25,1)}
+.card-actions{display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
+.compare-check{display:flex;align-items:center;gap:.4rem;font-size:12px;color:var(--muted);cursor:pointer}
+.compare-check input{accent-color:var(--teal)}
+.btn-sm{padding:.4rem 1rem;font-size:13px;font-weight:600;border-radius:6px;border:1px solid var(--teal);background:transparent;color:var(--teal);cursor:pointer;transition:all .2s}
+.btn-sm:hover{background:rgba(0,212,170,.15)}
+.compare-bar{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);z-index:900;background:var(--surface);border:1px solid var(--teal);border-radius:50px;padding:.75rem 1.5rem;display:flex;align-items:center;gap:1rem;transition:transform .3s cubic-bezier(.25,.8,.25,1);box-shadow:0 8px 32px rgba(0,212,170,.2)}
+.compare-bar.visible{transform:translateX(-50%) translateY(0)}
+
+/* ════════════════════════════
+   MODAL
+════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;max-width:900px;width:calc(100vw - 3rem);max-height:90vh;overflow-y:auto;padding:2.5rem;position:relative;transform:scale(.94);transition:transform .3s cubic-bezier(.25,.8,.25,1)}
+.modal-overlay.open .modal-box{transform:scale(1)}
+.modal-close{position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s}
+.modal-close:hover{background:rgba(229,57,53,.2)}
+.modal-title{font-size:28px;font-weight:800;margin-bottom:.5rem}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+.score-table{width:100%;border-collapse:collapse;margin-top:1rem}
+.score-table th{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.6rem .5rem;border-bottom:1px solid var(--border);text-align:left}
+.score-table td{padding:.7rem .5rem;font-size:14px;border-bottom:1px solid rgba(255,255,255,.04)}
+.score-table .score-val{font-weight:700;font-size:15px}
+.analyst-note{background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:12px;padding:1.25rem 1.5rem;margin-top:1.5rem}
+.analyst-note h4{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:.6rem}
+.analyst-note p{font-size:14px;color:rgba(255,255,255,.85);line-height:1.7}
+.risk-flags{margin-top:1.5rem}
+.risk-flags h4{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:.6rem}
+.flag-item{display:flex;align-items:flex-start;gap:.5rem;font-size:13px;color:rgba(255,255,255,.8);margin-bottom:.4rem}
+.flag-item::before{content:'';display:inline-block;width:14px;height:14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5A623' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/%3E%3Cline x1='12' y1='9' x2='12' y2='13'/%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'/%3E%3C/svg%3E");background-repeat:no-repeat;flex-shrink:0;margin-top:2px}
+.sources-row{margin-top:1.5rem;font-size:12px;color:var(--muted)}
+.sources-row span{font-weight:700;color:var(--teal)}
+
+/* Compare modal */
+.compare-grid{display:grid;gap:2rem}
+
+/* ════════════════════════════
+   FINDINGS
+════════════════════════════ */
+#findings{}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+.chart-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:1.75rem}
+.chart-card.full{grid-column:1/-1}
+.chart-card h3{font-size:16px;font-weight:700;margin-bottom:.25rem}
+.chart-card p{font-size:13px;color:var(--muted);margin-bottom:1.25rem}
+.chart-wrap{position:relative;height:320px}
+.chart-wrap.tall{height:420px}
+.insight-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:2.5rem}
+.insight-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:1.5rem}
+.insight-num{font-size:40px;font-weight:800;color:var(--teal);line-height:1;margin-bottom:.5rem}
+.insight-label{font-size:15px;font-weight:600;margin-bottom:.5rem}
+.insight-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ════════════════════════════
+   BUYERS GUIDE
+════════════════════════════ */
+#buyers{background:var(--surface2)}
+.flags-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:2.5rem 0}
+.flags-col h3{font-size:18px;font-weight:700;margin-bottom:1.25rem}
+.flag-card{display:flex;align-items:flex-start;gap:.75rem;padding:1rem;border-radius:12px;margin-bottom:.75rem;font-size:14px}
+.flag-card.green{background:rgba(0,200,83,.06);border:1px solid rgba(0,200,83,.15)}
+.flag-card.red{background:rgba(229,57,53,.06);border:1px solid rgba(229,57,53,.15)}
+.flag-card .icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.flag-card p{line-height:1.5}
+.flag-card strong{display:block;margin-bottom:.2rem}
+
+/* Decision tree */
+.dtree-wrap{margin:3rem 0}
+.dtree-title{font-size:20px;font-weight:700;margin-bottom:1.5rem}
+.dtree-node{max-width:600px;margin:0 auto;text-align:center}
+.dtree-question{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:1.5rem 2rem;font-size:17px;font-weight:600;margin-bottom:1.25rem}
+.dtree-btns{display:flex;justify-content:center;gap:1rem}
+.dtree-btn{padding:.65rem 1.75rem;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.dtree-btn.yes{background:rgba(0,212,170,.15);border:1px solid var(--teal);color:var(--teal)}
+.dtree-btn.no{background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.4);color:#f87171}
+.dtree-btn:hover{transform:translateY(-2px)}
+.dtree-outcome{padding:2rem;border-radius:16px;text-align:center;font-size:18px;font-weight:700;margin-top:1rem}
+.dtree-outcome.buy{background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:var(--green)}
+.dtree-outcome.investigate{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--amber)}
+.dtree-outcome.avoid{background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.3);color:var(--red)}
+.dtree-breadcrumb{font-size:13px;color:var(--muted);margin-bottom:1rem;min-height:20px}
+.dtree-restart{margin-top:1rem;font-size:13px;color:var(--teal);background:none;border:none;cursor:pointer;text-decoration:underline}
+.checklist-card{background:var(--glass);border:1px solid var(--teal);border-radius:16px;padding:2rem;margin-top:3rem;display:flex;gap:2rem;align-items:flex-start}
+.checklist-icon{font-size:48px;flex-shrink:0}
+.checklist-body h3{font-size:20px;font-weight:700;margin-bottom:.5rem}
+.checklist-body p{font-size:14px;color:var(--muted);margin-bottom:1rem}
+.checklist-items{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.checklist-items li{font-size:13px;list-style:none;display:flex;gap:.4rem;align-items:center}
+.checklist-items li::before{content:'☑';color:var(--teal)}
+
+/* ════════════════════════════
+   METHODOLOGY
+════════════════════════════ */
+#methodology{}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem}
+.method-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:1.75rem}
+.method-card h3{font-size:17px;font-weight:700;margin-bottom:.75rem;color:var(--teal)}
+.method-card p,.method-card li{font-size:14px;color:rgba(255,255,255,.8);line-height:1.7}
+.method-card ul{padding-left:1rem}
+.method-card li{margin-bottom:.35rem}
+.limitation-tag{display:inline-flex;align-items:center;gap:.3rem;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);border-radius:100px;padding:.2rem .65rem;font-size:11px;font-weight:700;color:var(--amber);margin:.2rem .2rem .2rem 0}
+
+/* ════════════════════════════
+   ABOUT
+════════════════════════════ */
+#about{background:var(--surface2)}
+.about-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem;margin-top:2.5rem;align-items:start}
+.about-main{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:2rem}
+.about-main h3{font-size:20px;font-weight:700;margin-bottom:1rem}
+.about-main p{font-size:15px;color:rgba(255,255,255,.8);line-height:1.7;margin-bottom:1rem}
+.next-card{background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(100,255,218,.04));border:1px solid rgba(0,212,170,.2);border-radius:16px;padding:1.75rem}
+.next-card h3{font-size:17px;font-weight:700;margin-bottom:1rem;color:var(--teal)}
+.next-item{display:flex;gap:.6rem;font-size:14px;margin-bottom:.6rem;align-items:flex-start}
+.next-item::before{content:'→';color:var(--teal);flex-shrink:0;margin-top:1px}
+
+/* ════════════════════════════
+   FOOTER
+════════════════════════════ */
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:13px;color:var(--muted)}
+
+/* ════════════════════════════
+   RESPONSIVE
+════════════════════════════ */
+@media(max-width:900px){
+  .modal-grid,.charts-grid,.explainer-grid,.method-grid,.about-grid,.flags-grid{grid-template-columns:1fr}
+  .charts-grid .chart-card.full{grid-column:1}
+  .hero-stats{gap:2rem}
+  nav .nav-links{display:none}
+}
+@media(max-width:600px){
+  section{padding:70px 1.25rem}
+  .hero-title{font-size:38px}
+  .checklist-card{flex-direction:column}
+  .checklist-items{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Carbon Integrity Scorecard</div>
+    <div class="nav-links">
+      <a href="#problem">The Problem</a>
+      <a href="#framework">Framework</a>
+      <a href="#scorecard">Scorecard</a>
+      <a href="#findings">Findings</a>
+      <a href="#buyers">Buyer's Guide</a>
+      <a href="#about">About</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div id="hero-bg-img"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span>◈</span> CYC Berkeley · Consulting Capstone 2026
+    </div>
+    <h1 class="hero-title">Carbon Credit<br><span>Integrity Scorecard</span></h1>
+    <p class="hero-subtitle">A consulting framework for evaluating voluntary carbon market credibility , built in the wake of the 2023 market collapse that wiped out 94% of credit value.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-count="10">0</span>
+        <span class="hero-stat-label">Credits Analyzed</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-count="6">0</span>
+        <span class="hero-stat-label">Integrity Criteria</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-count="3">0</span>
+        <span class="hero-stat-label">Registries Evaluated</span>
+      </div>
+    </div>
+    <div class="hero-quote">
+      <p>"Carbon offsets have become a way for polluters to look good on paper while continuing business as usual. The core problem is that we are measuring things that are very difficult to measure, and the system has strong incentives to get the numbers wrong."</p>
+      <cite>Barbara Haya, UC Berkeley Carbon Trading Project</cite>
+    </div>
+    <a href="#problem" class="btn btn-primary">Explore the Scorecard ↓</a>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="section-tag fade-in">The Crisis</div>
+    <h2 class="section-title fade-in">How a $2 Billion Market<br>Lost Its Credibility</h2>
+    <p class="section-subtitle fade-in">On January 18, 2023, a nine-month investigation by <em>The Guardian</em>, <em>Die Zeit</em>, and SourceMaterial revealed that more than 90% of Verra's rainforest carbon credits were worthless "phantom credits." The market never recovered.</p>
+    <div class="fade-in" style="margin:2rem 0;border-radius:16px;overflow:hidden;position:relative;height:220px">
+      <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1400&q=80" alt="Amazon rainforest aerial view" style="width:100%;height:100%;object-fit:cover;object-position:center 60%">
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,31,58,0.85) 0%,rgba(11,31,58,0.3) 60%,transparent 100%);display:flex;align-items:center;padding:2rem">
+        <div>
+          <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem">Amazon Basin, Peru</div>
+          <div style="font-size:18px;font-weight:700;max-width:400px;line-height:1.4">The forests that were "protected" , except they were never under threat</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-cards fade-in">
+      <div class="stat-card danger">
+        <div class="stat-card-num counter" data-count="94">0</div><span class="stat-card-label">% of Verra's rainforest offsets found to be phantom credits , did not represent genuine emissions reductions (Guardian/Die Zeit, Jan 2023)</span>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-card-num counter" data-count="88">0</div><span class="stat-card-label">% price crash in N-GEO nature-based credit benchmark from peak (~$17/tonne in 2022) to below $1/tonne by mid-2023</span>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-card-num counter" data-count="56">0</div><span class="stat-card-label">% decline in overall voluntary carbon market transaction volume from 2021 to 2023, with total market value dropping to $723M</span>
+      </div>
+    </div>
+
+    <h3 class="fade-in" style="font-size:20px;font-weight:700;margin:2.5rem 0 1rem">Collapse Timeline</h3>
+    <div class="timeline fade-in">
+      <div class="timeline-track" id="timeline-track">
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-date">2021</div>
+          <div class="timeline-event">Market Peaks</div>
+          <div class="timeline-desc">VCM reaches near 300M tonnes/year in issuances. N-GEO prices climb toward $17/tonne.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-date">2022</div>
+          <div class="timeline-event">Record Prices</div>
+          <div class="timeline-desc">Average credit price hits $7.37/tonne , +82% year-over-year. Corporate net-zero pledges drive demand.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot red active"></div>
+          <div class="timeline-date">Jan 18, 2023</div>
+          <div class="timeline-event">Investigation Drops</div>
+          <div class="timeline-desc">Guardian/Die Zeit: "94% of Verra rainforest offsets are phantom credits." Nine-month investigation reviews 2/3 of active projects.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot red active"></div>
+          <div class="timeline-date">Feb,Mar 2023</div>
+          <div class="timeline-event">Price Crash Begins</div>
+          <div class="timeline-desc">N-GEO drops from ~$15 to $1.70. Platts CNC loses 95.7% of value. REDD+ credits fall 25% in first 3 weeks.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-date">May 2023</div>
+          <div class="timeline-event">Verra CEO Resigns</div>
+          <div class="timeline-desc">David Antonioli, CEO for 15 years, steps down amid falling revenues. Kariba excess-credit scandal grows.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-date">Oct 2023</div>
+          <div class="timeline-event">Kariba Fallout</div>
+          <div class="timeline-desc">Verra confirms 15.2M excess credits issued for Kariba. South Pole terminates contract; CEO resigns. BeZero rates Kariba "D."</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-date">Apr 2024</div>
+          <div class="timeline-event">ICVCM Approvals</div>
+          <div class="timeline-desc">Gold Standard and ACR receive CCP-Eligible approval. Verra approved May 2024. Reform era begins.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-date">2026</div>
+          <div class="timeline-event">Bifurcated Recovery</div>
+          <div class="timeline-desc">High-integrity CCP credits trade at 65% premium over low-quality. First CCP-labeled IFM credits issued Dec 2026.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="explainer-grid fade-in">
+      <div class="explainer-card">
+        <div class="explainer-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <h3>What Is Additionality?</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7;margin-bottom:.75rem">A carbon credit is "additional" if the emissions reduction <strong>would not have happened without the revenue from selling that credit</strong>. This is the "but-for" test: but for this funding, would the forest still be standing?</p>
+        <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7;margin-bottom:.75rem"><strong>The analogy:</strong> Paying someone $10 not to eat a cake they weren't going to eat anyway. The cake was never at risk , your payment bought nothing real.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7">Researchers at Berkeley, Oxford, and CarbonPlan found <strong>85% of offsets sold today are not additional</strong> , meaning buyers paid for emissions reductions that would have occurred regardless.</p>
+      </div>
+      <div class="explainer-card">
+        <div class="explainer-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></div>
+        <h3>What Are Phantom Credits?</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7;margin-bottom:.75rem">Phantom credits are issued against a <strong>deliberately inflated baseline</strong> , the project developer overstates how much deforestation would have occurred without the project, then claims credit for "preventing" deforestation that was never going to happen.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7;margin-bottom:.75rem">For Kariba in Zimbabwe, researchers found the project received <strong>30× more credits than it should have</strong>. South Pole's own satellite analysis found 27 million of Kariba's credits were fabricated.</p>
+        <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7">When corporations "offset" their emissions with phantom credits, their net-zero claims are mathematically false.</p>
+      </div>
+    </div>
+
+    <div class="ej-callout fade-in">
+      <h3><svg style="display:inline;vertical-align:middle;margin-right:8px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Environmental Justice: The Human Cost of Fraud</h3>
+      <p style="font-size:14px;line-height:1.7;color:rgba(255,255,255,.85)"><strong>Kariba, Zimbabwe:</strong> The Kariba REDD+ project generated approximately €100 million in carbon credit revenue between 2011 and 2023. A fraction reached the villages in Nyaminyami, Binga, Mbire, and Hurungwe , the four districts whose communal woodlands underwrote those credits. Researchers documented "functional displacement": communities lost access to land for agriculture, firewood, and traditional use without receiving the promised benefits. The money flowed through a Guernsey-registered company, the trail deliberately obscured. Steve Wentzel, the entrepreneur behind the project, later admitted to "illegal" money-hiding practices.</p>
+      <p style="font-size:14px;line-height:1.7;color:rgba(255,255,255,.85);margin-top:.75rem">This is not an edge case. A 2024 review found that <strong>10 of 16 UN-REDD countries violated Free Prior Informed Consent (FPIC)</strong> requirements , the legal obligation to seek indigenous community consent before starting a project. In Cambodia, FPIC meetings for a Verra-certified project began 31 months after operations started.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FRAMEWORK -->
+<section id="framework">
+  <div class="container">
+    <div class="section-tag fade-in">The Methodology</div>
+    <h2 class="section-title fade-in">How We Score Integrity</h2>
+    <p class="section-subtitle fade-in">Six criteria, 0,10 each (60 points max), anchored to the ICVCM's 2023 Core Carbon Principles , the first global standard with genuine enforcement teeth.</p>
+
+    <div class="criteria-grid">
+      <div class="criteria-card fade-in">
+        <div class="criteria-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <div class="criteria-title">Additionality</div>
+        <div class="criteria-desc">Would the emissions reductions have happened without this credit's revenue? Anchored to ICVCM CCP #5. The "but-for" test , the most commonly failed criterion.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <span class="criteria-anchor high">10 = Ironclad additionality proof</span>
+          <span class="criteria-anchor low">0 = Baseline massively inflated</span>
+        </div>
+        <div class="criteria-ccp">ICVCM CCP #5 · Additionality</div>
+      </div>
+      <div class="criteria-card fade-in">
+        <div class="criteria-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></div>
+        <div class="criteria-title">Permanence</div>
+        <div class="criteria-desc">How durable is the carbon storage? Does a credible buffer pool exist? REDD+ projects face reversal risk from fire, drought, and political instability.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <span class="criteria-anchor high">10 = 100yr+ permanence with insurance</span>
+          <span class="criteria-anchor low">0 = No buffer, high reversal risk</span>
+        </div>
+        <div class="criteria-ccp">ICVCM CCP #6 · Permanence</div>
+      </div>
+      <div class="criteria-card fade-in">
+        <div class="criteria-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg></div>
+        <div class="criteria-title">Verification Quality</div>
+        <div class="criteria-desc">How independent is the auditing? A systemic conflict of interest exists when auditors are paid by the very developers whose credits they certify.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <span class="criteria-anchor high">10 = Fully independent third-party</span>
+          <span class="criteria-anchor low">0 = Self-certified or developer-paid</span>
+        </div>
+        <div class="criteria-ccp">ICVCM CCP #3 · Third-Party Validation</div>
+      </div>
+      <div class="criteria-card fade-in">
+        <div class="criteria-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/><rect x="3" y="22" width="18" height="0"/><path d="M12 7v1"/></svg></div>
+        <div class="criteria-title">Registry Credibility</div>
+        <div class="criteria-desc">How strict are the registry's standards for this credit type? Post-2023, the ICVCM CCP-Eligible designation is the credibility floor.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <span class="criteria-anchor high">10 = CCP-approved, post-reform</span>
+          <span class="criteria-anchor low">0 = Major fraud allegations, no reform</span>
+        </div>
+        <div class="criteria-ccp">ICVCM CCP #1 · Effective Governance</div>
+      </div>
+      <div class="criteria-card fade-in">
+        <div class="criteria-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="criteria-title">Community Impact</div>
+        <div class="criteria-desc">Did the project benefit or harm local and indigenous communities? Free, Prior, and Informed Consent (FPIC) is the legal and ethical baseline.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <span class="criteria-anchor high">10 = FPIC + revenue sharing + documented benefit</span>
+          <span class="criteria-anchor low">0 = Displacement, land grabs, rights violations</span>
+        </div>
+        <div class="criteria-ccp">ICVCM CCP #9 · Sustainable Development</div>
+      </div>
+      <div class="criteria-card fade-in">
+        <div class="criteria-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+        <div class="criteria-title">Price Stability</div>
+        <div class="criteria-desc">Did this credit type hold value after the 2023 collapse? Price stability signals market confidence and buyer willingness to pay post-scrutiny.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <span class="criteria-anchor high">10 = Price held or recovered</span>
+          <span class="criteria-anchor low">0 = Collapsed to near zero, delisted</span>
+        </div>
+        <div class="criteria-ccp">Market Signal · Post-2023 Resilience</div>
+      </div>
+    </div>
+
+    <div class="radar-container fade-in">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:.25rem;text-align:center">Average Score Profile , All 10 Credits</h3>
+      <p style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:1.5rem">Systemic weaknesses visible across the market</p>
+      <div style="position:relative;height:340px"><canvas id="avg-radar"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORECARD -->
+<section id="scorecard">
+  <div class="container">
+    <div class="section-tag fade-in">The Dashboard</div>
+    <h2 class="section-title fade-in">Credit Integrity Scorecard</h2>
+    <p class="section-subtitle fade-in">All 10 credits scored across 6 criteria. Click any card for the full analysis. Use filters to explore by registry, type, or integrity tier.</p>
+
+    <div class="filter-bar fade-in">
+      <div class="filter-group">
+        <label>Registry</label>
+        <div class="filter-pills" data-filter="registry">
+          <button class="pill active" data-val="all">All</button>
+          <button class="pill" data-val="Verra">Verra</button>
+          <button class="pill" data-val="Gold Standard">Gold Standard</button>
+          <button class="pill" data-val="ACR">ACR</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Type</label>
+        <div class="filter-pills" data-filter="type">
+          <button class="pill active" data-val="all">All</button>
+          <button class="pill" data-val="REDD+">REDD+</button>
+          <button class="pill" data-val="Renewable">Renewable</button>
+          <button class="pill" data-val="Cookstove">Cookstove</button>
+          <button class="pill" data-val="Blue Carbon">Blue Carbon</button>
+          <button class="pill" data-val="IFM">IFM</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Integrity Tier</label>
+        <div class="filter-pills" data-filter="tier">
+          <button class="pill active" data-val="all">All</button>
+          <button class="pill" data-val="High">High</button>
+          <button class="pill" data-val="Medium">Medium</button>
+          <button class="pill" data-val="Low">Low</button>
+          <button class="pill" data-val="Critical">Critical</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Sort By</label>
+        <select class="sort-select" id="sort-select">
+          <option value="total">Total Score</option>
+          <option value="additionality">Additionality</option>
+          <option value="community">Community Impact</option>
+          <option value="price">Price Stability</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="credits-grid" id="credits-grid"></div>
+
+    <div class="compare-bar" id="compare-bar">
+      <span id="compare-count" style="font-size:14px;font-weight:600">0 selected</span>
+      <button class="btn btn-primary" style="padding:.5rem 1.25rem;font-size:13px" onclick="openCompare()">Compare Selected</button>
+      <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px" onclick="clearCompare()">×</button>
+    </div>
+  </div>
+</section>
+
+<!-- FINDINGS -->
+<section id="findings">
+  <div class="container">
+    <div class="section-tag fade-in">Analysis</div>
+    <h2 class="section-title fade-in">What the Data Tells Us</h2>
+    <p class="section-subtitle fade-in">Patterns across registries, credit types, and scoring criteria reveal structural failures in how the voluntary carbon market has operated , and where reform is taking hold.</p>
+
+    <div class="charts-grid fade-in">
+      <div class="chart-card full">
+        <h3>All 10 Credits , Ranked by Total Integrity Score</h3>
+        <p>Color indicates integrity tier. Registry labeled on each bar.</p>
+        <div class="chart-wrap tall"><canvas id="bar-chart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Credit Distribution by Integrity Tier</h3>
+        <p>Majority of reviewed credits fall in low or critical risk categories</p>
+        <div class="chart-wrap"><canvas id="donut-chart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Average Criterion Score by Registry</h3>
+        <p>ACR and Gold Standard outperform Verra across all 6 criteria</p>
+        <div class="chart-wrap"><canvas id="grouped-bar"></canvas></div>
+      </div>
+      <div class="chart-card full">
+        <h3>Additionality vs. Community Impact</h3>
+        <p>Bubble size = total score. Color = registry. The two most-failed criteria reveal a pattern: projects that fail on additionality almost always fail on community impact too.</p>
+        <div class="chart-wrap tall"><canvas id="scatter-chart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="insight-cards fade-in">
+      <div class="insight-card">
+        <div class="insight-num">70%</div>
+        <div class="insight-label">of reviewed credits score below 35 , Low or Critical integrity</div>
+        <div class="insight-desc">7 of 10 credits fall below the medium-integrity threshold. The majority of voluntary market volume is concentrated in exactly these categories.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-num" style="color:var(--red)">8/60</div>
+        <div class="insight-label">Kariba REDD+ total score , the market's most visible fraud</div>
+        <div class="insight-desc">Generated €100M in revenue. Delivered zero verifiable community benefit. Issued 15.2M excess credits by Verra's own accounting. The archetypal case for why this framework exists.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-num" style="color:var(--green)">50/60</div>
+        <div class="insight-label">Appalachian IFM earns first CCP-label status (Dec 2026)</div>
+        <div class="insight-desc">The highest-scoring credit in this analysis. First CCP-labelled IFM credits issued December 2026. Commands a 65% price premium over non-CCP credits.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUYERS GUIDE -->
+<section id="buyers">
+  <div class="container">
+    <div class="section-tag fade-in">Due Diligence</div>
+    <h2 class="section-title fade-in">What Should an Investor<br>Actually Look For?</h2>
+    <p class="section-subtitle fade-in">Post-2023 institutional buyers have shifted from volume-based purchasing to integrity-based screening. Here is the framework that separates high-confidence buys from reputational landmines.</p>
+
+    <div class="flags-grid fade-in">
+      <div class="flags-col">
+        <h3 style="color:var(--green)">Green Flags</h3>
+        <div class="flag-card green"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><div><p><strong>ICVCM CCP-Label</strong> Seek credits explicitly carrying the CCP label , not just CCP-Eligible registries, but the label applied to specific approved methodologies. As of 2026, this is the highest credibility signal in the market.</p></div></div>
+        <div class="flag-card green"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><div><p><strong>Independent Third-Party Verifier with No Financial Relationship to Developer</strong> The auditor must not be selected or paid directly by the project developer. Look for registry-assigned verification.</p></div></div>
+        <div class="flag-card green"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><div><p><strong>Documented FPIC and Community Benefit-Sharing</strong> Project documentation should include signed FPIC agreements, benefit-sharing ledgers, and third-party community impact assessments , not developer self-reports.</p></div></div>
+        <div class="flag-card green"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><div><p><strong>Conservative Baseline Methodology</strong> Seek projects using conservative, peer-reviewed deforestation models , not developer-estimated baselines. BeZero Carbon and Sylvera ratings are useful third-party screens.</p></div></div>
+        <div class="flag-card green"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><div><p><strong>Buffer Pool Disclosure</strong> Registry should maintain a transparent, independently managed buffer pool equal to at least 10,20% of issued credits to cover reversals. ACR's buffer pool methodology is a reference standard.</p></div></div>
+      </div>
+      <div class="flags-col">
+        <h3 style="color:var(--red)">Red Flags</h3>
+        <div class="flag-card red"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><div><p><strong>REDD+ Credits Without Post-2023 Re-Verification</strong> Any REDD+ credit issued before mid-2023 and not re-verified under updated methodologies should be treated as suspect. The Guardian investigation specifically targeted this cohort.</p></div></div>
+        <div class="flag-card red"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><div><p><strong>Developer-Controlled Governance Structure</strong> Projects where the developer controls community consultation, benefit distribution, and verification oversight simultaneously have structural conflicts of interest. Kariba is the defining case study.</p></div></div>
+        <div class="flag-card red"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><div><p><strong>Renewable Energy Credits in Mature Markets</strong> Solar and wind additionality in grid-connected markets with &gt;5% renewable penetration is almost impossible to demonstrate. Gold Standard restricted these credits from India in 2020 for exactly this reason.</p></div></div>
+        <div class="flag-card red"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><div><p><strong>Offshore Corporate Structure with Opaque Revenue Flows</strong> Project developers incorporated in tax havens (Cayman, Guernsey, BVI) with no transparent community revenue ledger is a documented pattern in fraudulent REDD+ projects.</p></div></div>
+        <div class="flag-card red"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><div><p><strong>No BeZero/Sylvera Rating or "D" Rating</strong> BeZero Carbon and Sylvera provide independent credit quality ratings. A "D" rating (as issued for Kariba) or absence of rating from a major project should trigger heightened due diligence.</p></div></div>
+      </div>
+    </div>
+
+    <div class="dtree-wrap fade-in">
+      <div class="dtree-title">Interactive Decision Tree: Should I Buy This Credit?</div>
+      <div class="dtree-node" id="dtree">
+        <div class="dtree-breadcrumb" id="dtree-breadcrumb"></div>
+        <div id="dtree-content"></div>
+      </div>
+    </div>
+
+    <div class="checklist-card fade-in">
+      <div class="checklist-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>
+      <div class="checklist-body">
+        <h3>Institutional Buyer Due Diligence Checklist</h3>
+        <p style="font-size:14px;color:var(--muted)">Pre-purchase screening framework based on ICVCM CCPs and post-2023 best practices</p>
+        <ul class="checklist-items">
+          <li>CCP-Label confirmed on specific credit batch</li>
+          <li>Registry verified as CCP-Eligible</li>
+          <li>Independent verifier , no developer relationship</li>
+          <li>FPIC documentation on file</li>
+          <li>Community benefit-sharing ledger available</li>
+          <li>Buffer pool percentage disclosed (&gt;10%)</li>
+          <li>Baseline methodology peer-reviewed</li>
+          <li>BeZero or Sylvera rating ≥ B</li>
+          <li>No active registry suspension or investigation</li>
+          <li>Project developer corporate structure transparent</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section id="methodology">
+  <div class="container">
+    <div class="section-tag fade-in">Transparency</div>
+    <h2 class="section-title fade-in">Methodology & Limitations</h2>
+    <p class="section-subtitle fade-in">A scoring framework is only as credible as its underlying logic and honesty about what it cannot do.</p>
+
+    <div class="method-grid fade-in">
+      <div class="method-card">
+        <h3>Scoring Design Rationale</h3>
+        <p>Each of the 6 criteria is scored 0,10 and weighted equally (60 points total). Equal weighting is a deliberate choice: no single criterion is sufficient on its own, and the ICVCM CCPs treat additionality, permanence, and community impact as co-equal pillars. A project that scores perfectly on additionality but fails on community impact should not receive a high overall rating , which is precisely what equal weighting achieves.</p>
+        <p style="margin-top:.75rem">Scores are derived from primary source research: registry documentation, peer-reviewed studies, investigative journalism, third-party rating agency assessments (BeZero, Sylvera), and field reporting from Human Rights Watch, REDD Monitor, and Carbon Brief.</p>
+      </div>
+      <div class="method-card">
+        <h3>ICVCM CCP Alignment</h3>
+        <p>The ICVCM's 10 Core Carbon Principles (released March 2023) are the first global governance standard for voluntary carbon markets with genuine enforcement mechanisms. Each scoring criterion maps directly to one or more CCPs:</p>
+        <ul style="margin-top:.75rem">
+          <li>Additionality → CCP #5</li>
+          <li>Permanence → CCP #6</li>
+          <li>Verification Quality → CCP #3 (Third-Party Validation)</li>
+          <li>Registry Credibility → CCP #1 (Effective Governance)</li>
+          <li>Community Impact → CCP #9 (Sustainable Development)</li>
+          <li>Price Stability → Market signal, no direct CCP mapping</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <h3>Data Sources</h3>
+        <ul>
+          <li><em>The Guardian/Die Zeit/SourceMaterial</em> investigation, January 18, 2023</li>
+          <li>ICVCM Core Carbon Principles framework, 2023</li>
+          <li>Verra VCS registry documentation and suspension notices</li>
+          <li>Gold Standard methodology documentation</li>
+          <li>ACR ISO-14064 standards and CCP approval records</li>
+          <li>Xpansiv CBL N-GEO price data 2021,2026</li>
+          <li>Human Rights Watch: "Carbon Offsetting's Casualties," Feb 2024</li>
+          <li>CarbonPlan and Berkeley Carbon Trading Project analyses</li>
+          <li>BeZero Carbon and Sylvera third-party credit ratings</li>
+          <li>Ecosystem Marketplace State of the Market reports</li>
+        </ul>
+      </div>
+      <div class="method-card">
+        <h3>Honest Limitations</h3>
+        <p style="margin-bottom:.75rem">This scorecard has real constraints that any buyer should understand:</p>
+        <div>
+          <span class="limitation-tag">Subjectivity</span> Scores involve qualitative judgment. Two analysts reviewing the same project may reach different conclusions. This framework should be a starting point, not a final verdict.
+          <span class="limitation-tag" style="margin-top:.5rem;display:inline-flex">Static Data</span> Carbon markets move fast. Prices, registry standings, and project statuses change. This analysis reflects the state of information as of early 2026.
+          <span class="limitation-tag" style="margin-top:.5rem;display:inline-flex">Portfolio Gap</span> Scoring 10 credits is illustrative. A real institutional buyer needs portfolio-level scoring across hundreds of credits with automated data feeds.
+          <span class="limitation-tag" style="margin-top:.5rem;display:inline-flex">Price Proxy</span> Price stability is used as a proxy for market confidence but does not directly measure environmental integrity.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-tag fade-in">About This Project</div>
+    <h2 class="section-title fade-in">Built at UC Berkeley</h2>
+
+    <div class="about-grid fade-in">
+      <div class="about-main">
+        <div style="border-radius:12px;overflow:hidden;margin-bottom:1.5rem;height:180px">
+          <img src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?w=800&q=80" alt="UC Berkeley campus" style="width:100%;height:100%;object-fit:cover;object-position:center 40%">
+        </div>
+        <h3>Consult Your Community (CYC) , Consulting Capstone 2026</h3>
+        <p>This tool was built as a capstone consulting project for <strong>Consult Your Community (CYC) at UC Berkeley</strong> , a student-run consulting organization that partners with nonprofits, community organizations, and socially-minded enterprises.</p>
+        <p>The voluntary carbon market sits at the intersection of climate finance, indigenous rights, and corporate accountability. When it works, it channels billions of dollars toward genuine emissions reductions in forests that would otherwise be cleared. When it fails , as it spectacularly did in 2023 , it provides cover for polluters, launders corporate greenwashing, and in documented cases, directly harms the indigenous communities it claims to protect.</p>
+        <p>This framework exists because the information asymmetry between credit sellers and institutional buyers is structural. Project developers control their own auditors, set their own baselines, and control community benefit distribution. The 2023 collapse was not a market failure in the traditional sense , it was a governance failure enabled by insufficient scrutiny tools available to buyers.</p>
+        <p>The environmental justice dimension cannot be separated from the financial integrity question. The communities whose land underpins REDD+ credits , in Zimbabwe, DRC Congo, Indonesia, Peru , bear the real-world costs of fraudulent accounting in ways that never appear in a credit's price history.</p>
+      </div>
+      <div>
+        <div class="next-card">
+          <h3>What's Next for This Framework</h3>
+          <div class="next-item">Automated price feeds from Xpansiv CBL and Sylvera API , replace static price stability scores with live market data</div>
+          <div class="next-item">Registry API integration , pull current project status, suspension notices, and verification records in real time</div>
+          <div class="next-item">Portfolio-level scoring , enable institutional buyers to upload a credit portfolio and receive aggregate integrity diagnostics</div>
+          <div class="next-item">FPIC audit trail integration , pull community consent documentation from REDD+ Social &amp; Environmental Safeguards (SES) reports</div>
+          <div class="next-item">NLP-based analyst note generation , automate the 3,4 sentence analyst summary from registry documentation and third-party research</div>
+          <div class="next-item">Stress-test scenarios , model how a credit's score changes under different deforestation rate assumptions to quantify additionality sensitivity</div>
+        </div>
+        <div style="margin-top:1.5rem;padding:1.5rem;background:var(--glass);border:1px solid var(--border);border-radius:16px">
+          <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem">Contact</div>
+          <p style="font-size:14px;color:var(--muted)">Shawyaan Hajebi · UC Berkeley · <a href="mailto:shawyaan@berkeley.edu">shawyaan@berkeley.edu</a></p>
+          <p style="font-size:13px;color:var(--muted);margin-top:.5rem">Consult Your Community (CYC) · Berkeley, CA</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Carbon Credit Integrity Scorecard · CYC Berkeley Consulting Capstone 2026 · Built for educational and consulting purposes · Not financial advice</p>
+</footer>
+
+<!-- MODAL: Credit Detail -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('detail-modal')">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- MODAL: Compare -->
+<div class="modal-overlay" id="compare-modal">
+  <div class="modal-box" style="max-width:1100px">
+    <button class="modal-close" onclick="closeModal('compare-modal')">×</button>
+    <div id="compare-content"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+const CRITERIA = ['Additionality','Permanence','Verification','Registry','Community','Price'];
+const CRIT_SHORT = ['Add','Perm','Verif','Reg','Comm','Price'];
+
+const credits = [
+  {
+    id:0,
+    name:'Tambopata-Bahuaja REDD+',
+    country:'Peru',flag:'🇵🇪',
+    registry:'Verra',type:'REDD+',
+    scores:[6,7,6,5,8,4],
+    analyst:'The Tambopata-Bahuaja project, managed by Peruvian NGO AIDER across 573,299 hectares of the Madre de Dios region, is among the more credible REDD+ credits in this analysis. It carries dual VCS and CCB Gold certification and has contributed €2.9 million to the local economy with documented cacao production employment. However, it shares the systemic baseline inflation risk of all Verra REDD+ credits pre-2023, and the N-GEO price collapse has eroded its market value significantly. Community impact is genuine but the governance structures remain developer-controlled.',
+    risks:['REDD+ baseline methodology subject to post-2023 scrutiny','N-GEO price collapse , lost ~88% of value from 2022 peak','Verra registry credibility still recovering post-Guardian investigation','Developer-controlled benefit distribution, not independently audited'],
+    sources:'Verra VCS Project ID 1067; CCB Gold certification; AIDER project documentation; Guardian investigation (Jan 2023); Ecosystem Marketplace 2023 State of Market'
+  },
+  {
+    id:1,
+    name:'Kariba REDD+',
+    country:'Zimbabwe',flag:'🇿🇼',
+    registry:'Verra',type:'REDD+',
+    scores:[1,2,1,2,1,1],
+    analyst:'Kariba is the most consequential fraud case in voluntary carbon market history. A nine-month investigation found 27 million of its credits were fabricated , Verra itself confirmed 15.2 million excess credits. The project generated ~€100 million in revenue while delivering negligible benefit to the Nyaminyami, Binga, Mbire, and Hurungwe communities whose land underpinned the credits. Revenue was routed through a Guernsey-registered company with deliberately obscured money flows. South Pole terminated its contract in October 2023 and its CEO resigned. BeZero Carbon delisted Kariba with a "D" rating. This credit should not be held by any institution with fiduciary obligations.',
+    risks:['15.2M+ excess credits confirmed by Verra , credits are phantom','€100M revenue, near-zero community benefit , documented functional displacement','Auditors (Verra-approved) failed to detect 30x overestimation','BeZero Carbon "D" rating , effectively delisted from credible markets','South Pole CEO resigned over Kariba exposure; Carbon Green Investments withdrew from registry May 2024','Offshore Guernsey corporate structure with deliberately obscured revenue flows'],
+    sources:'Guardian/Die Zeit/SourceMaterial investigation (Jan 2023); Verra excess-credit confirmation (Oct 2023); South Pole termination notice (Oct 2023); BeZero Carbon "D" rating; Follow the Money investigation; Human Rights Watch "Carbon Offsetting\'s Casualties" (Feb 2024); EJAtlas Kariba case study'
+  },
+  {
+    id:2,
+    name:'Mai Ndombe REDD+',
+    country:'D.R. Congo',flag:'🇨🇩',
+    registry:'Verra',type:'REDD+',
+    scores:[5,5,5,5,6,4],
+    analyst:'Mai Ndombe is a 248,956-hectare project protecting one of the DRC\'s last intact forest ecosystems from commercial logging and slash-and-burn agriculture. It has issued 175 million tonnes of CO₂e to date , among the largest nature-based projects globally , and documents benefit to 2,772 smallholders with ~50% women. The project scores modestly above Verra\'s most troubled credits, with more credible community engagement than Kariba. However, it faces the systemic baseline inflation risk of all DRC REDD+ credits, operates in a jurisdiction with weak governance, and has not received post-2023 re-verification under updated methodologies.',
+    risks:['DRC governance risk , political instability threatens permanence','REDD+ baseline methodology under systemic scrutiny post-2023','No post-2023 independent re-verification confirmed','Benefit-sharing documentation not independently audited'],
+    sources:'Verra VCS registry; Wildlife Works Carbon and Ecosystem Restoration Associates project documentation; Ecosystem Marketplace 2023; REDD Monitor DRC analysis'
+  },
+  {
+    id:3,
+    name:'Rimba Raya Biodiversity Reserve',
+    country:'Indonesia',flag:'🇮🇩',
+    registry:'Verra',type:'REDD+',
+    scores:[5,3,3,4,5,2],
+    analyst:'Rimba Raya is one of the world\'s largest REDD+ projects, having issued 33.63 million credits , 6.84% of all Verra nature-based avoidance credits. In May 2024, Verra suspended the registry account of proponent InfiniteEARTH after Indonesia\'s Ministry of Environment and Forestry revoked its Forestry Business Utilization License for permit transfers and trading beyond the licensed area. The project won a legal challenge in late 2024 and attempted to resume, but regulatory uncertainties and the suspension history severely damage its credibility. The suspension score reflects real governance failure, not merely reputational noise.',
+    risks:['Verra registry account suspended May 2024 , Indonesian license revoked','Permit transfer violations and out-of-bounds trading documented','33.6M credits issued , large volume exposure for buyers holding legacy credits','Legal status uncertain post-suspension despite court victory','No confirmed CCP-level re-verification'],
+    sources:'Verra suspension notice (May 2024); S&P Global Commodity Insights reporting; Indonesian Ministry of Environment and Forestry license revocation; InfiniteEARTH legal filings'
+  },
+  {
+    id:4,
+    name:'South Pole Forest Carbon',
+    country:'Multiple',flag:'🌐',
+    registry:'Gold Standard',type:'REDD+',
+    scores:[4,5,4,6,4,4],
+    analyst:'South Pole was the world\'s largest carbon credit trader by volume , until the Kariba scandal broke. Follow the Money found that Kariba represented ~10% of South Pole\'s 2022 revenue (~€23 million), and its own satellite analysis identified 27 million fabricated credits. South Pole terminated its Kariba contract in October 2023 and its CEO resigned. The company\'s Gold Standard-certified portfolio outside of Kariba maintains reasonable integrity, and Gold Standard received CCP-Eligible approval in April 2024. However, the systemic question remains: if South Pole\'s due diligence failed on Kariba at this scale, what else was missed?',
+    risks:['Direct Kariba exposure , €23M revenue from fraudulent project in 2022','CEO resigned; institutional credibility severely damaged','Auditor conflict-of-interest questions raised across portfolio','Gold Standard CCP-Eligible but not all South Pole credits carry CCP label'],
+    sources:'Follow the Money investigation (Nov 2023); South Pole Kariba contract termination (Oct 2023); Gold Standard CCP-Eligible approval (Apr 2024); ICVCM CCP framework documentation'
+  },
+  {
+    id:5,
+    name:'American Farmland Wind',
+    country:'United States',flag:'🇺🇸',
+    registry:'ACR',type:'Renewable',
+    scores:[6,8,8,8,7,7],
+    analyst:'ACR-certified US wind energy credits represent one of the more credible credit types in the voluntary market. The absence of physical reversal risk (energy generation does not "un-generate") gives high permanence scores, and ACR\'s ISO 14064-aligned standards with registry-assigned verification remove the developer-paid auditor conflict. ACR was approved as CCP-Eligible in April 2024 and was the first and only program approved by ICAO for CORSIA compliance credits. Additionality at 6 reflects the ongoing question of whether US renewable energy projects require carbon revenue given declining solar and wind costs , though Farmland Wind projects in areas without existing grid connections have a stronger additionality case.',
+    risks:['Additionality faces increasing scrutiny as US renewable costs decline','Not yet carrying specific CCP-label on individual credit batches','Farmland solar/wind siting conflicts with agricultural land use'],
+    sources:'ACR registry standards; ISO 14064 methodology documentation; ICAO CORSIA eligible programs list; ICVCM CCP-Eligible approval (Apr 2024); American Farmland Trust renewable energy analysis'
+  },
+  {
+    id:6,
+    name:'Cookstove Project Uganda',
+    country:'Uganda',flag:'🇺🇬',
+    registry:'Gold Standard',type:'Cookstove',
+    scores:[8,7,8,8,9,7],
+    analyst:'The Uganda Cookstove project is the world\'s first Gold Standard-certified cookstove project and the largest of its kind in East Africa, with 930,000+ stoves manufactured and distributed. Its community impact documentation is exceptional: 83,131 children benefit annually from reduced indoor air pollution, households save $100+ per year on fuel, and stove distribution specifically targets women\'s time burden from fuel collection. Gold Standard certification received CCP-Eligible approval in April 2024. This is the clearest case in this analysis of carbon market revenue genuinely driving additionality , the stoves would not have been distributed without the funding mechanism.',
+    risks:['Usage monitoring relies on self-reporting in some cohorts','Permanence depends on continued stove adoption and replacement cycle','Carbon calculation methodologies for cookstoves have evolved , legacy credits may require re-verification'],
+    sources:'Gold Standard project documentation; WHO Indoor Air Pollution statistics; Ecologi project impact data; Gold Standard CCP-Eligible approval (Apr 2024); East Africa cookstove market analysis'
+  },
+  {
+    id:7,
+    name:'Blue Carbon Mangrove Restoration',
+    country:'Coastal (Multi)',flag:'🔵',
+    registry:'Verra',type:'Blue Carbon',
+    scores:[6,5,5,5,6,5],
+    analyst:'Blue carbon mangrove projects represent less than 1% of all VCS-certified credits but are a rapidly growing segment. Mangroves are among the most carbon-dense ecosystems on earth, storing 3,5× more carbon per hectare than tropical forests. Additionality is generally strong , mangrove restoration does not happen without funding. Permanence is the key risk: coastal ecosystems face compounding threats from sea level rise, storm surge, and saltwater intrusion, and measuring carbon stored in underwater sediment is technically complex. Verra\'s blue carbon methodology has been criticized for potential double-counting and inadequate monitoring requirements.',
+    risks:['Permanence threatened by sea level rise and coastal erosion','Underwater carbon measurement technically challenging , monitoring standards vary','Verra\'s blue carbon methodology under academic scrutiny for quantification accuracy','Community benefit documentation often weaker than terrestrial projects'],
+    sources:'Verra VCS blue carbon methodology; Gold Standard mangrove methodology (2024); Nature-based Solutions market analysis; IPCC ocean carbon sequestration reports; Carbon Brief blue carbon analysis'
+  },
+  {
+    id:8,
+    name:'Renewable Energy Solar India',
+    country:'India',flag:'🇮🇳',
+    registry:'Gold Standard',type:'Renewable',
+    scores:[3,7,6,7,6,4],
+    analyst:'This credit type exemplifies the additionality failure mode for renewable energy in emerging markets. Gold Standard restricted new renewable energy credit issuance in India in 2020, recognizing that plummeting solar costs had removed the financial barrier to deployment that once justified carbon revenue as the "additional" funding source. Projects issued before this restriction carry a significant additionality question mark. The Bhadla Solar project in Rajasthan , one of India\'s largest at 400MW , trades at $12/tonne Gold Standard certified, but the underlying additionality case is contested. This is not fraud; it is a structural market design failure that Gold Standard itself acknowledged and attempted to correct.',
+    risks:['Additionality contested for post-2017 vintage Indian solar , solar costs fell below grid parity','Gold Standard restricted new India renewable credits from 2020 , signals own market admission of failure','Legacy credits in buyer portfolios may not meet current additionality standards','Price held better than REDD+ but faces additionality-driven repricing risk'],
+    sources:'Gold Standard renewable energy eligibility restrictions (2020); IRENA India solar cost data; Gold Standard CCP-Eligible approval (Apr 2024); BloombergNEF renewable energy cost analysis; Xpansiv CBL price data'
+  },
+  {
+    id:9,
+    name:'Appalachian Forest IFM',
+    country:'United States',flag:'🇺🇸',
+    registry:'ACR',type:'IFM',
+    scores:[8,8,9,9,8,8],
+    analyst:'The Appalachian Improved Forest Management (IFM) credit, issued through the Family Forest Carbon Program under ACR\'s v2.1 methodology, is the highest-integrity credit in this analysis. ACR\'s IFM methodology received CCP approval in August 2026 , the first IFM methodology to do so , and the first CCP-labelled IFM credits were issued in December 2026. Additionality is strong: small private landowners in Appalachia would otherwise sell timber rights without the carbon revenue mechanism. The 40-year minimum project term and independently managed buffer pool provide genuine permanence protections. This represents what the reformed voluntary carbon market can look like when governance, additionality, and community impact are all properly addressed.',
+    risks:['Buffer pool adequacy over 40-year term depends on sustained registry governance','Aggregation model (many small landowners) creates monitoring complexity','Price premium may attract lower-quality copycat IFM projects to market'],
+    sources:'ACR IFM methodology v2.1 (updated Jul 2024); ICVCM CCP approval for ACR IFM (Aug 2026); Family Forest Carbon Program documentation; First CCP-labelled IFM credits (Dec 2026); ACR CORSIA approval history'
+  }
+];
+
+function totalScore(c){return c.scores.reduce((a,b)=>a+b,0)}
+function tierName(t){if(t>=50)return'High';if(t>=35)return'Medium';if(t>=20)return'Low';return'Critical'}
+function tierColor(t){if(t>=50)return'var(--teal)';if(t>=35)return'var(--amber)';if(t>=20)return'#fb923c';return'var(--red)'}
+function tierBadgeClass(t){if(t>=50)return'badge-tier-high';if(t>=35)return'badge-tier-medium';if(t>=20)return'badge-tier-low';return'badge-tier-critical'}
+function registryBadgeClass(r){if(r==='Verra')return'badge-verra';if(r==='Gold Standard')return'badge-gold';return'badge-acr'}
+function criteriaColor(v){if(v>=8)return'var(--green)';if(v>=6)return'var(--teal)';if(v>=4)return'var(--amber)';return'var(--red)'}
+
+// ═══════════════════════════════════════════════
+// HERO PARTICLES
+// ═══════════════════════════════════════════════
+(function(){
+  const canvas=document.getElementById('hero-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,particles;
+  function init(){
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+    particles=Array.from({length:80},()=>({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      r:Math.random()*2+.5,
+      alpha:Math.random()*.4+.1
+    }));
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,212,170,${p.alpha})`;ctx.fill();
+    });
+    particles.forEach((p,i)=>{
+      particles.slice(i+1).forEach(q=>{
+        const dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle=`rgba(0,212,170,${.08*(1-d/120)})`;ctx.lineWidth=.5;ctx.stroke();
+        }
+      });
+    });
+    requestAnimationFrame(draw);
+  }
+  init();draw();
+  window.addEventListener('resize',init);
+})();
+
+// ═══════════════════════════════════════════════
+// HERO COUNTERS (immediate on load)
+// ═══════════════════════════════════════════════
+function animateCount(el,target,duration=1200){
+  const start=Date.now();
+  const tick=()=>{
+    const p=Math.min((Date.now()-start)/duration,1);
+    el.textContent=Math.round(p*target);
+    if(p<1)requestAnimationFrame(tick);
+    else el.textContent=target;
+  };
+  tick();
+}
+window.addEventListener('load',()=>{
+  document.querySelectorAll('.hero-stat-num[data-count]').forEach(el=>{
+    animateCount(el,+el.dataset.count,1000);
+  });
+});
+
+// ═══════════════════════════════════════════════
+// SCROLL ANIMATIONS
+// ═══════════════════════════════════════════════
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // scroll counters
+      e.target.querySelectorAll('.counter[data-count]').forEach(el=>{
+        if(!el.dataset.counted){el.dataset.counted=1;animateCount(el,+el.dataset.count,1400);}
+      });
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.12});
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+
+// ═══════════════════════════════════════════════
+// RENDER CREDIT CARDS
+// ═══════════════════════════════════════════════
+let activeFilters={registry:'all',type:'all',tier:'all'};
+let compareSet=new Set();
+let compareCharts={};
+
+function renderCards(){
+  const grid=document.getElementById('credits-grid');
+  const sortVal=document.getElementById('sort-select').value;
+  const sortIdx={total:-1,additionality:0,community:4,price:5}[sortVal];
+
+  let list=[...credits];
+  list.sort((a,b)=>{
+    const va=sortIdx===-1?totalScore(a):a.scores[sortIdx];
+    const vb=sortIdx===-1?totalScore(b):b.scores[sortIdx];
+    return vb-va;
+  });
+
+  grid.innerHTML='';
+  list.forEach(c=>{
+    const t=totalScore(c);
+    const tier=tierName(t);
+    const show=(activeFilters.registry==='all'||c.registry===activeFilters.registry)&&
+               (activeFilters.type==='all'||c.type===activeFilters.type)&&
+               (activeFilters.tier==='all'||tier===activeFilters.tier);
+    const card=document.createElement('div');
+    card.className='credit-card'+(show?'':' hidden');
+    card.dataset.id=c.id;
+    const ringR=28,circ=2*Math.PI*ringR,dash=circ*(t/60);
+    card.innerHTML=`
+      <div class="card-top">
+        <div class="card-name">${c.name}</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:rgba(136,146,176,.1);padding:.2rem .6rem;border-radius:6px;white-space:nowrap">${c.country}</div>
+      </div>
+      <div class="card-badges">
+        <span class="badge ${registryBadgeClass(c.registry)}">${c.registry}</span>
+        <span class="badge badge-type">${c.type}</span>
+        <span class="badge ${tierBadgeClass(t)}">${tier} Integrity</span>
+      </div>
+      <div class="card-score-row">
+        <div class="score-ring-wrap">
+          <svg class="score-ring-svg" viewBox="0 0 72 72">
+            <circle class="score-ring-bg" cx="36" cy="36" r="${ringR}" stroke-width="6"/>
+            <circle class="score-ring-fill" cx="36" cy="36" r="${ringR}" stroke-width="6"
+              stroke="${tierColor(t)}"
+              stroke-dasharray="${circ}"
+              stroke-dashoffset="${circ}"
+              data-dash="${circ-dash}"
+              style="stroke-dashoffset:${circ}"/>
+          </svg>
+          <div class="score-ring-text" style="color:${tierColor(t)}">${t}<span class="score-ring-denom">/60</span></div>
+        </div>
+        <div class="criteria-bars">
+          ${CRIT_SHORT.map((l,i)=>`
+            <div class="cbar-row">
+              <span class="cbar-label">${l}</span>
+              <div class="cbar-track"><div class="cbar-fill" data-w="${c.scores[i]*10}" style="width:0%;background:${criteriaColor(c.scores[i])}"></div></div>
+              <span style="font-size:11px;font-weight:700;color:${criteriaColor(c.scores[i])};width:14px;text-align:right">${c.scores[i]}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="card-actions">
+        <label class="compare-check"><input type="checkbox" ${compareSet.has(c.id)?'checked':''} onchange="toggleCompare(${c.id},this.checked)"> Add to Compare</label>
+        <button class="btn-sm" onclick="openDetail(${c.id})">View Full Analysis</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  // Animate rings & bars after paint
+  requestAnimationFrame(()=>{
+    grid.querySelectorAll('.score-ring-fill').forEach(el=>{
+      setTimeout(()=>{el.style.transition='stroke-dashoffset 1s cubic-bezier(.25,.8,.25,1)';el.style.strokeDashoffset=el.dataset.dash;},100);
+    });
+    grid.querySelectorAll('.cbar-fill').forEach(el=>{
+      setTimeout(()=>{el.style.width=el.dataset.w+'%';},120);
+    });
+  });
+}
+
+// Filters
+document.querySelectorAll('.filter-pills').forEach(group=>{
+  group.querySelectorAll('.pill').forEach(pill=>{
+    pill.addEventListener('click',()=>{
+      group.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+      pill.classList.add('active');
+      activeFilters[group.dataset.filter]=pill.dataset.val;
+      renderCards();
+    });
+  });
+});
+document.getElementById('sort-select').addEventListener('change',renderCards);
+renderCards();
+
+// ═══════════════════════════════════════════════
+// COMPARE
+// ═══════════════════════════════════════════════
+function toggleCompare(id,checked){
+  if(checked){if(compareSet.size>=3){alert('Maximum 3 credits for comparison.');const el=document.querySelector(`.credit-card[data-id="${id}"] input[type=checkbox]`);if(el)el.checked=false;return;}compareSet.add(id);}
+  else compareSet.delete(id);
+  const bar=document.getElementById('compare-bar');
+  document.getElementById('compare-count').textContent=compareSet.size+' selected';
+  bar.classList.toggle('visible',compareSet.size>=2);
+}
+function clearCompare(){
+  compareSet.clear();
+  document.querySelectorAll('.compare-check input').forEach(el=>el.checked=false);
+  document.getElementById('compare-bar').classList.remove('visible');
+}
+
+function openCompare(){
+  const ids=[...compareSet];
+  const cs=ids.map(id=>credits[id]);
+  const content=document.getElementById('compare-content');
+  // Destroy old charts
+  Object.values(compareCharts).forEach(ch=>ch.destroy());compareCharts={};
+
+  content.innerHTML=`
+    <h2 class="modal-title">Credit Comparison</h2>
+    <div style="display:grid;grid-template-columns:${cs.map(()=>'1fr').join(' ')};gap:1.5rem;margin-top:1.5rem">
+      ${cs.map(c=>{
+        const t=totalScore(c);
+        return`<div>
+          <div style="font-size:17px;font-weight:700;margin-bottom:.25rem">${c.flag} ${c.name}</div>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem">
+            <span class="badge ${registryBadgeClass(c.registry)}">${c.registry}</span>
+            <span class="badge ${tierBadgeClass(t)}">${tierName(t)} · ${t}/60</span>
+          </div>
+          <div style="position:relative;height:260px"><canvas id="cmp-radar-${c.id}"></canvas></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <table class="score-table" style="margin-top:2rem">
+      <thead><tr><th>Criterion</th>${cs.map(c=>`<th>${c.name.split(' ').slice(0,2).join(' ')}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${CRITERIA.map((cr,i)=>`<tr>
+          <td>${cr}</td>
+          ${cs.map(c=>{
+            const best=Math.max(...cs.map(x=>x.scores[i]));
+            return`<td class="score-val" style="color:${c.scores[i]===best?'var(--teal)':'var(--text)'}">${c.scores[i]}/10</td>`;
+          }).join('')}
+        </tr>`).join('')}
+        <tr style="border-top:2px solid var(--border)">
+          <td><strong>Total</strong></td>
+          ${cs.map(c=>{const t=totalScore(c);const best=Math.max(...cs.map(x=>totalScore(x)));return`<td class="score-val" style="color:${t===best?'var(--teal)':'var(--text)'}"><strong>${t}/60</strong></td>`;}).join('')}
+        </tr>
+      </tbody>
+    </table>`;
+
+  document.getElementById('compare-modal').classList.add('open');
+
+  cs.forEach(c=>{
+    const ctx2=document.getElementById(`cmp-radar-${c.id}`).getContext('2d');
+    compareCharts[c.id]=new Chart(ctx2,radarConfig(c.scores,tierColor(totalScore(c))));
+  });
+}
+
+// ═══════════════════════════════════════════════
+// DETAIL MODAL
+// ═══════════════════════════════════════════════
+let detailChart=null;
+function openDetail(id){
+  const c=credits[id];
+  const t=totalScore(c);
+  const content=document.getElementById('modal-content');
+  if(detailChart){detailChart.destroy();detailChart=null;}
+
+  content.innerHTML=`
+    <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+      <div>
+        <div style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">${c.registry} · ${c.type} · ${c.country}</div>
+        <h2 class="modal-title">${c.flag} ${c.name}</h2>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem">
+          <span class="badge ${registryBadgeClass(c.registry)}">${c.registry}</span>
+          <span class="badge badge-type">${c.type}</span>
+          <span class="badge ${tierBadgeClass(t)}">${tierName(t)} Integrity · ${t}/60</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-grid">
+      <div>
+        <div style="position:relative;height:300px"><canvas id="detail-radar"></canvas></div>
+      </div>
+      <div>
+        <table class="score-table">
+          <thead><tr><th>Criterion</th><th>Score</th><th>Signal</th></tr></thead>
+          <tbody>
+            ${CRITERIA.map((cr,i)=>`<tr>
+              <td>${cr}</td>
+              <td class="score-val" style="color:${criteriaColor(c.scores[i])}">${c.scores[i]}/10</td>
+              <td><div style="width:${c.scores[i]*10}%;height:6px;background:${criteriaColor(c.scores[i])};border-radius:4px;min-width:4px"></div></td>
+            </tr>`).join('')}
+            <tr><td><strong>Total</strong></td><td class="score-val" style="color:${tierColor(t)}"><strong>${t}/60</strong></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="analyst-note">
+      <h4>Analyst Note</h4>
+      <p>${c.analyst}</p>
+    </div>
+    <div class="risk-flags">
+      <h4>Key Risk Flags</h4>
+      ${c.risks.map(r=>`<div class="flag-item">${r}</div>`).join('')}
+    </div>
+    <div class="sources-row"><span>Sources:</span> ${c.sources}</div>`;
+
+  document.getElementById('detail-modal').classList.add('open');
+  const ctx2=document.getElementById('detail-radar').getContext('2d');
+  detailChart=new Chart(ctx2,radarConfig(c.scores,tierColor(t)));
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(el=>el.classList.remove('open'));});
+
+// ═══════════════════════════════════════════════
+// CHART CONFIGS
+// ═══════════════════════════════════════════════
+function radarConfig(scores,color){
+  return{
+    type:'radar',
+    data:{
+      labels:CRITERIA,
+      datasets:[{
+        data:scores,
+        backgroundColor:color.replace(')',', 0.15)').replace('var(--teal)','rgba(0,212,170').replace('var(--amber)','rgba(245,166,35').replace('var(--red)','rgba(229,57,53').replace('var(--green)','rgba(0,200,83').replace('#fb923c','rgba(251,146,60'),
+        borderColor:color.includes('var(')?color.includes('teal')?'rgba(0,212,170,0.9)':color.includes('amber')?'rgba(245,166,35,0.9)':color.includes('red')?'rgba(229,57,53,0.9)':'rgba(0,200,83,0.9)':color,
+        borderWidth:2,pointBackgroundColor:color.includes('teal')?'#00D4AA':color.includes('amber')?'#F5A623':color.includes('red')?'#E53935':'#00C853',pointRadius:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{r:{min:0,max:10,ticks:{display:false,stepSize:2},grid:{color:'rgba(255,255,255,.08)'},angleLines:{color:'rgba(255,255,255,.1)'},pointLabels:{color:'#8892B0',font:{size:12,family:'Inter'}}}},
+      plugins:{legend:{display:false}},
+      animation:{duration:800}
+    }
+  };
+}
+
+// ═══════════════════════════════════════════════
+// AVG RADAR
+// ═══════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  const avgs=CRITERIA.map((_,i)=>parseFloat((credits.reduce((s,c)=>s+c.scores[i],0)/credits.length).toFixed(1)));
+  new Chart(document.getElementById('avg-radar').getContext('2d'),{
+    type:'radar',
+    data:{
+      labels:CRITERIA,
+      datasets:[{
+        label:'Market Average',
+        data:avgs,
+        backgroundColor:'rgba(0,212,170,0.1)',
+        borderColor:'rgba(0,212,170,0.8)',
+        borderWidth:2,
+        pointBackgroundColor:'#00D4AA',
+        pointRadius:5
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{r:{min:0,max:10,ticks:{stepSize:2,color:'rgba(136,146,176,.6)',backdropColor:'transparent'},grid:{color:'rgba(255,255,255,.07)'},angleLines:{color:'rgba(255,255,255,.1)'},pointLabels:{color:'#8892B0',font:{size:13,family:'Inter'}}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`Avg: ${ctx.raw}/10`}}}
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════
+// FINDINGS CHARTS
+// ═══════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  // Bar chart , ranked by total
+  const sorted=[...credits].sort((a,b)=>totalScore(b)-totalScore(a));
+  new Chart(document.getElementById('bar-chart').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:sorted.map(c=>c.name.length>20?c.name.substring(0,18)+'…':c.name),
+      datasets:[{
+        data:sorted.map(c=>totalScore(c)),
+        backgroundColor:sorted.map(c=>tierColor(totalScore(c)).replace('var(--teal)','#00D4AA').replace('var(--amber)','#F5A623').replace('var(--red)','#E53935').replace('#fb923c','#fb923c').replace('var(--green)','#00C853')),
+        borderRadius:6,
+        borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      scales:{
+        x:{max:60,grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8892B0',font:{family:'Inter'}},border:{display:false}},
+        y:{grid:{display:false},ticks:{color:'#fff',font:{size:12,family:'Inter'}},border:{display:false}}
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          title:ctx=>sorted[ctx[0].dataIndex].name,
+          afterLabel:ctx=>`Registry: ${sorted[ctx[0].dataIndex].registry}\nTier: ${tierName(ctx[0].raw)}`
+        }}
+      }
+    }
+  });
+
+  // Donut chart
+  const tierCounts={High:0,Medium:0,Low:0,Critical:0};
+  credits.forEach(c=>tierCounts[tierName(totalScore(c))]++);
+  new Chart(document.getElementById('donut-chart').getContext('2d'),{
+    type:'doughnut',
+    data:{
+      labels:Object.keys(tierCounts),
+      datasets:[{data:Object.values(tierCounts),backgroundColor:['#00D4AA','#F5A623','#fb923c','#E53935'],borderWidth:0,hoverOffset:8}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{position:'bottom',labels:{color:'#8892B0',padding:16,font:{size:13,family:'Inter'}}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} credit${ctx.raw!==1?'s':''}`}}}
+    }
+  });
+
+  // Grouped bar , avg by registry
+  const regGroups={Verra:[],['Gold Standard']:[],'ACR':[]};
+  credits.forEach(c=>regGroups[c.registry].push(c));
+  const regAvgs={};
+  Object.entries(regGroups).forEach(([r,cs])=>{
+    regAvgs[r]=CRITERIA.map((_,i)=>parseFloat((cs.reduce((s,c)=>s+c.scores[i],0)/cs.length).toFixed(1)));
+  });
+  new Chart(document.getElementById('grouped-bar').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:CRITERIA,
+      datasets:[
+        {label:'Verra',data:regAvgs['Verra'],backgroundColor:'rgba(59,130,246,.7)',borderRadius:4,borderSkipped:false},
+        {label:'Gold Standard',data:regAvgs['Gold Standard'],backgroundColor:'rgba(245,166,35,.7)',borderRadius:4,borderSkipped:false},
+        {label:'ACR',data:regAvgs['ACR'],backgroundColor:'rgba(0,200,83,.7)',borderRadius:4,borderSkipped:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{
+        y:{min:0,max:10,grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8892B0',font:{family:'Inter'}},border:{display:false}},
+        x:{grid:{display:false},ticks:{color:'#8892B0',font:{size:11,family:'Inter'}},border:{display:false}}
+      },
+      plugins:{legend:{position:'bottom',labels:{color:'#8892B0',padding:12,font:{family:'Inter',size:12}}}}
+    }
+  });
+
+  // Scatter , Additionality vs Community Impact
+  const regColors={'Verra':'rgba(59,130,246,0.85)','Gold Standard':'rgba(245,166,35,0.85)','ACR':'rgba(0,200,83,0.85)'};
+  const scatterDatasets=Object.entries(regColors).map(([reg,color])=>({
+    label:reg,
+    data:credits.filter(c=>c.registry===reg).map(c=>({
+      x:c.scores[0],y:c.scores[4],
+      r:Math.max(totalScore(c)/5,4),
+      name:c.name,total:totalScore(c)
+    })),
+    backgroundColor:color,
+    borderColor:color.replace('0.85','1'),
+    borderWidth:1
+  }));
+  new Chart(document.getElementById('scatter-chart').getContext('2d'),{
+    type:'bubble',
+    data:{datasets:scatterDatasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      scales:{
+        x:{title:{display:true,text:'Additionality Score',color:'#8892B0',font:{family:'Inter'}},min:0,max:10,grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8892B0',font:{family:'Inter'}},border:{display:false}},
+        y:{title:{display:true,text:'Community Impact Score',color:'#8892B0',font:{family:'Inter'}},min:0,max:10,grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#8892B0',font:{family:'Inter'}},border:{display:false}}
+      },
+      plugins:{
+        legend:{position:'bottom',labels:{color:'#8892B0',padding:12,font:{family:'Inter',size:12}}},
+        tooltip:{callbacks:{
+          title:ctx=>credits.find(c=>c.scores[0]===ctx[0].parsed.x&&c.scores[4]===ctx[0].parsed.y)?.name||'',
+          label:ctx=>`Add: ${ctx.parsed.x} | Comm: ${ctx.parsed.y} | Total: ${ctx.raw.total}/60`
+        }}
+      }
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════
+// DECISION TREE
+// ═══════════════════════════════════════════════
+const dtreeNodes={
+  start:{q:'Does the credit carry an explicit ICVCM CCP-Label (not just CCP-Eligible registry)?',yes:'q2',no:'q1a'},
+  q1a:{q:'Is the project type something other than REDD+ or nature-based avoidance pre-2023?',yes:'q2',no:'avoid1'},
+  avoid1:{outcome:'avoid',msg:'Avoid , Pre-2023 REDD+ credits without CCP-label carry unacceptable phantom-credit risk. The Guardian investigation found 94% of Verra rainforest offsets were worthless. Without post-2023 re-verification and a CCP label, these credits expose buyers to reputational and financial risk.'},
+  q2:{q:'Is there documented Free Prior Informed Consent (FPIC) from affected indigenous/local communities?',yes:'q3',no:'q2b'},
+  q2b:{q:'Is the project in a jurisdiction with strong rule of law and no documented FPIC failures?',yes:'q3',no:'investigate1'},
+  investigate1:{outcome:'investigate',msg:'Investigate Further , Community consent gaps are the most common source of project controversy and reputational risk for buyers. Require the developer to produce signed FPIC agreements and third-party community impact assessments before proceeding.'},
+  q3:{q:'Is the verifier fully independent , not selected or paid directly by the project developer?',yes:'q4',no:'investigate2'},
+  investigate2:{outcome:'investigate',msg:'Investigate Further , Auditor independence is a structural weakness across all registries. Require documentation of how the verifier was selected and confirm no financial relationship existed with the developer. This was the failure mode that enabled Kariba.'},
+  q4:{q:'Has this specific credit type been confirmed as additional under current (post-2020) market conditions?',yes:'buy',no:'investigate3'},
+  investigate3:{outcome:'investigate',msg:'Investigate Further , Additionality is the most commonly failed criterion. For renewable energy in markets with falling technology costs, or for REDD+ with inflated baselines, additionality must be demonstrated against current conditions , not conditions at project inception.'},
+  buy:{outcome:'buy',msg:'High Confidence Buy , This credit has cleared all four key integrity checkpoints: CCP-label, FPIC documentation, independent verification, and confirmed additionality. Combined with registry oversight, this represents the highest-integrity cohort in the current voluntary carbon market.'}
+};
+
+let dtreePath=[];
+function renderDtree(nodeId){
+  const node=dtreeNodes[nodeId];
+  const el=document.getElementById('dtree-content');
+  const bc=document.getElementById('dtree-breadcrumb');
+  bc.textContent=dtreePath.length?'Path: '+dtreePath.join(' → '):'';
+  if(node.outcome){
+    el.innerHTML=`
+      <div class="dtree-outcome ${node.outcome}">
+        ${node.outcome==='buy'
+          ? '<svg style="display:inline;vertical-align:middle;margin-right:8px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> High Confidence Buy'
+          : node.outcome==='investigate'
+          ? '<svg style="display:inline;vertical-align:middle;margin-right:8px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Investigate Further'
+          : '<svg style="display:inline;vertical-align:middle;margin-right:8px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Avoid'}
+      </div>
+      <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7;margin-top:1rem;max-width:560px;margin-left:auto;margin-right:auto;text-align:left">${node.msg}</p>
+      <button class="dtree-restart" onclick="startDtree()">↺ Start Over</button>`;
+    return;
+  }
+  el.innerHTML=`
+    <div class="dtree-question">${node.q}</div>
+    <div class="dtree-btns">
+      <button class="dtree-btn yes" onclick="dtreeNext('${nodeId}','yes','${node.yes}')">Yes ✓</button>
+      <button class="dtree-btn no" onclick="dtreeNext('${nodeId}','no','${node.no}')">No ✗</button>
+    </div>`;
+}
+function dtreeNext(from,choice,next){
+  dtreePath.push(choice==='yes'?'Yes':'No');
+  renderDtree(next);
+}
+function startDtree(){dtreePath=[];renderDtree('start');}
+startDtree();
+</script>
+</body>
+</html>
